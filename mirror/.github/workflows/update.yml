@@ -19,4 +19,13 @@ jobs:
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git remote add upstream "git://git.proxmox.com/git/$(basename "$(git remote get-url origin)")"
           git fetch upstream
-          git push origin
+          for remote in $(git branch -r | grep -v /HEAD)
+          do
+            git checkout --track $remote
+          done
+          for branch in $(git branch | grep -v /HEAD)
+          do
+            git switch $branch
+            git pull upstream $branch
+          done
+          git push --all --tags origin

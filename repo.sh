@@ -16,6 +16,7 @@ create() {
     DESCRIPTION="$2"
 
     pushd "$SCRIPT_DIR/.."
+    rm -rf "$SCRIPT_DIR/../$REPO"
     gh repo delete --confirm "ProtonDI/$REPO" || true
     gh repo create --public "ProtonDI/$REPO"
     gh repo clone "ProtonDI/$REPO"
