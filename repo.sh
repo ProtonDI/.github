@@ -20,13 +20,21 @@ create() {
     gh repo create --public "ProtonDI/$REPO"
     gh repo clone "ProtonDI/$REPO"
 
-    cp -r "$SCRIPT_DIR/project/." "$SCRIPT_DIR/../$REPO"
+    cp -r "$SCRIPT_DIR/${FUNCNAME[1]}/." "$SCRIPT_DIR/../$REPO"
     cat << EOF >> "$SCRIPT_DIR/../$REPO/README.md"
 # $REPO
 
 $DESCRIPTION
 EOF
     popd
+}
+
+project() {
+    create "$@"
+}
+
+mirror() {
+    create "$@"
 }
 
 push() {
@@ -36,12 +44,15 @@ push() {
     git add .
     git commit -m "Initial commit"
     git push
-    gh workflow run release.yml
+    for i in $(ls .github/workflows)
+    do
+        gh workflow run $i
+    done
     popd
 }
 
 case $ACTION in
-    create|push)
+    project|mirror|push)
         $ACTION "$@"
         ;;
     *)
