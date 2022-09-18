@@ -19,6 +19,7 @@ create() {
     rm -rf "$SCRIPT_DIR/../$REPO"
     gh repo delete --confirm "ProtonDI/$REPO" || true
     gh repo create --public "ProtonDI/$REPO"
+    gh repo edit --description "$DESCRIPTION" "ProtonDI/$REPO"
     gh repo clone "ProtonDI/$REPO"
 
     cp -r "$SCRIPT_DIR/${FUNCNAME[1]}/." "$SCRIPT_DIR/../$REPO"
