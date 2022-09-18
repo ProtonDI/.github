@@ -14,19 +14,21 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+          token: ${{ secrets.PUSH_TOKEN }}
       - name: Commit changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git remote add upstream "git://git.proxmox.com/git/$(basename "$(git remote get-url origin)")"
           git fetch upstream
-          for remote in $(git branch -r | grep -v /HEAD)
+          for remote in $(git branch -r --format='%(refname:short)' | grep -v '/HEAD')
           do
-            git checkout --track $remote
+            git checkout --track "$remote" || true
           done
-          for branch in $(git branch | grep -v /HEAD)
+          for branch in $(git branch --format='%(refname:short)')
           do
-            git switch $branch
-            git pull upstream $branch
+            git switch "$branch"
+            git pull upstream "$branch" || true
           done
-          git push --all --tags origin
+          git remote remove upstream
+          git push --mirror origin
