@@ -46,9 +46,9 @@ push() {
     git add .
     git commit -m "Initial commit"
     git push
-    for i in $(ls .github/workflows)
+    for i in .github/workflows/*
     do
-        gh workflow run $i
+        gh workflow run "$i"
     done
     popd
 }
@@ -58,7 +58,7 @@ case $ACTION in
         $ACTION "$@"
         ;;
     *)
-        echo "Unknown action `$ACTION`." >&2
+        echo "Unknown action '$ACTION'." >&2
         exit 1
         ;;
 esac
